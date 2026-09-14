@@ -9,12 +9,16 @@ import SwiftUI
 
 struct ContentView: View {
     @Environment(AppDependencies.self) var appDependencies
-    
+    @AppStorage("rememberMe") private var rememberMe = false
+    @AppStorage("savedUserName") private var savedUserName = ""
+    @AppStorage("savedPassword") private var savedPassword = ""
+
     var body: some View {
-        VStack {
+        if rememberMe && !savedUserName.isEmpty {
+            FeedView(feedsService: appDependencies.feedService, userName: savedUserName)
+        } else {
             LoginView(loginService: appDependencies.loginService)
         }
-        .padding()
     }
 }
 

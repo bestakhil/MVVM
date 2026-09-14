@@ -16,6 +16,11 @@ struct LoginView: View {
     @Environment(AppDependencies.self) var appDependencies
     @State private var viewModel: LoginViewModel
     
+    @AppStorage("savedUserName") var savedUserName = ""
+    @AppStorage("savedPassword") var savedPassword = ""
+    @AppStorage("rememberMe") var rememberMe = false
+    
+
     @State var userName: String = ""
     @State var password: String = ""
     @State private var displayAlert = false
@@ -44,6 +49,9 @@ struct LoginView: View {
                     .clipShape(.rect(cornerRadius: 10))
                     .focused($focusLoginPage, equals: .password)
                 
+                Toggle("Remember Me", isOn: $rememberMe)
+                    .padding(.vertical, 4)
+
                 Button {
                     signIn()
                     guard !userName.isEmpty, !password.isEmpty else { return }
@@ -53,6 +61,13 @@ struct LoginView: View {
                             displayAlert = true
                             isLoggedIn = false
                         } else {
+                            if rememberMe {
+                                savedUserName = userName
+                                savedPassword = password
+                            } else {
+                                savedUserName = ""
+                                savedPassword = ""
+                            }
                             isLoggedIn = true
                             displayAlert = false
                         }
