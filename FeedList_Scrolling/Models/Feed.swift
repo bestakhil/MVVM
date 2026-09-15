@@ -8,13 +8,20 @@
 import Foundation
 
 struct Feed : Decodable, Identifiable, Hashable {
-    let feedId: String
-    var id:String {
+    let feedId: Int
+    var id:Int {
         feedId
     }
-    let feedBody: String
-    let imageURL: URL?
-    let feedUserName: String
+    let body: String
+    let imageUrl: URL?
+    let author: Author?
+}
+
+struct Author: Decodable, Hashable {
+    let id: Int
+    let name: String
+    let username: String
+    let avatarUrl: URL?
 }
 
 struct FeedPage: Decodable,Sendable {

@@ -31,7 +31,6 @@ final class FeedsViewModel {
         guard hasmoreFeeds  else { return }
         fetchState = .loading
         do {
-            
             let feedPage: FeedPage = try await self.feedService.getFeeds(cursor: nextCursor)
             feeds += feedPage.feeds
             nextCursor = feedPage.nextCursor
@@ -39,6 +38,26 @@ final class FeedsViewModel {
             fetchState = .loadedSuccess
         } catch {
             print(error.localizedDescription)
+            errorDescn = error.localizedDescription
+            fetchState = .loadingFailed
+        }
+    }
+    
+    
+    func fetchFeedsLocal() async {
+        fetchState = .loading
+        guard let fileUrl = Bundle.main.url(forResource: "feed", withExtension: "json") else {
+            fetchState = .loadingFailed
+            return
+        }
+        do {
+            let data = try await Task.detached(priority: .userInitiated) {
+                try Data(contentsOf: fileUrl)
+            }.value
+            feeds = try JSONDecoder().decode([Feed].self, from: data)
+            nextCursor = nil
+            fetchState = .loadedSuccess
+        } catch {
             errorDescn = error.localizedDescription
             fetchState = .loadingFailed
         }

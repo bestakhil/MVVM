@@ -19,7 +19,7 @@ struct LoginView: View {
     @AppStorage("savedUserName") var savedUserName = ""
     @AppStorage("savedPassword") var savedPassword = ""
     @AppStorage("rememberMe") var rememberMe = false
-    
+    @AppStorage("mockMode") var mockMode = false
 
     @State var userName: String = ""
     @State var password: String = ""
@@ -91,9 +91,9 @@ struct LoginView: View {
             .onAppear {
                 focusLoginPage = .userName
             }
-//            .navigationDestination(isPresented: $isLoggedIn) {
-//                FeedView(feedsService: appDependencies.feedService)
-//            }
+            .navigationDestination(isPresented: $mockMode) {
+                FeedView(feedsService: appDependencies.feedService, userName: "User")
+            }
             .navigationDestination(item: $viewModel.loginResponse) { response in
                 FeedView(feedsService: appDependencies.feedService, userName: response.userName ?? "N/A")
             }
